@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>☣ Probability of meeting the infected</h2>
+			<div style="text-align: left">
+    			Fill in your local numbers and click calculate. This is just a simple estimate and there may be a bug in the calculation. But it is the best I have as of 2020-03-12. It is calculated by estimating probability of not meeting any of the infected, but unconfirmed (not quarantined) people. The infected people are estimated based on claim that 80% of cases have mild symptoms and are not reported.
+
+    			<script>
+    				function getInt(id) {
+    					return parseInt(document.getElementById(id).value)
+    				}
+
+    				function calc() {
+    					let pop = getInt('population');
+    					let confirmed = getInt('confirmed-cases');
+    					let infected = (confirmed / 20) * 80;
+    					let meet = getInt('population-meet');
+    					document.getElementById('total-infected').innerText = infected.toString();
+    					// document.getElementById('probability').innerText = Math.floor((1 - Math.pow((1 - infected / pop), meet)) * 100).toString() + '%';
+
+    					if (pop <= infected) {
+    						alert('Population less than infected count!');
+    						document.getElementById('probability').innerText = '100%';
+
+    					} else if (meet >= pop || meet >= infected) {
+    						alert('Number of met people is too large!');
+    						document.getElementById('probability').innerText = '100%';
+
+    					} else {
+    						let probOfNot = 1;
+    						for (let i = 0; i < meet; i++) {
+    							probOfNot = probOfNot * (1 - infected / (pop - i));
+    						}
+    						document.getElementById('probability').innerText = Math.floor((1 - probOfNot) * 100).toString() + '%';
+
+    					}
+
+    				}
+
+
+    			</script>
+
+    			<table>
+        			<tr><td><label for="population">Population: </label></td><td><input type="number" id="population" value="1000000"/></td></tr>
+        			<tr><td><label for="confirmed-cases">Confirmed active cases: </label></td><td><input type="number" id="confirmed-cases" value="94"/></td></tr>
+        			<tr><td><label for="population-meet">Random people I meet in day: </label></td><td><input type="number" id="population-meet" value="100"/></td></tr>
+        			<tr><td>Total infected not quarantined:</td><td><span id="total-infected">?</span></td></tr>
+        			<tr><td>Daily probability meeting one or more infected person:</td><td><span id="probability">?</span></td></tr>
+        			<tr><td></td><td></td></tr>
+        			<tr><td><button type="button" onclick="calc()">Calculate</button></td><td></td></tr>
+    			</table>
+    		</div>
+        </html>
